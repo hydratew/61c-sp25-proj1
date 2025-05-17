@@ -24,18 +24,78 @@ static void update_head(game_t *game, unsigned int snum);
 /* Task 1 */
 game_t *create_default_game() {
   // TODO: Implement this function.
-  return NULL;
+  game_t *def_game = malloc(sizeof(game_t));
+  if (def_game == NULL){
+    printf("Initialization Failed.");
+    return NULL;
+  }
+  def_game->num_rows = 18;
+  def_game->num_snakes = 1;
+
+  def_game->snakes = malloc(sizeof(snake_t));
+  if (def_game->snakes == NULL){
+    printf("Snake Failed.");
+    return NULL;
+  }
+  def_game->snakes->head_col = 4;
+  def_game->snakes->head_row = 2;
+  def_game->snakes->live = true;
+  def_game->snakes->tail_col = 2;
+  def_game->snakes->tail_row = 2;
+
+
+  def_game->board = malloc(def_game->num_rows * sizeof(char *));
+  if (def_game->snakes == NULL){
+    printf("Board Initialize Failed.");
+    return NULL;
+  }
+
+  def_game->board[0] = malloc(22 * sizeof(char));
+  if (def_game->snakes == NULL){
+    printf("Board Initialize Failed.");
+    return NULL;
+  }
+  strcpy(def_game->board[0],"####################\n"); 
+
+  def_game->board[def_game->num_rows - 1] = malloc(22 * sizeof(char));
+
+  if (def_game->board[def_game->num_rows - 1] == NULL){
+      printf("Board Allocate Failed.");
+      return NULL;
+  }
+  strcpy(def_game->board[def_game->num_rows - 1],"####################\n"); 
+
+  for(int i = 1; i < def_game->num_rows - 1; i++){
+    def_game->board[i] = malloc(22 * sizeof(char));
+    strcpy(def_game->board[i],"#                  #\n"); 
+
+    if (def_game->board[i] == NULL){
+      printf("Board Allocate Failed.");
+      return NULL;
+    }
+  }
+  strcpy(def_game->board[2],"# d>D    *         #\n");
+  return def_game;
 }
 
 /* Task 2 */
 void free_game(game_t *game) {
   // TODO: Implement this function.
+  for(int i = 0; i < game->num_rows; i++){
+    free(game->board[i]);
+  }
+  free(game->board);
+  free(game->snakes);
+  free(game);
   return;
 }
 
 /* Task 3 */
 void print_board(game_t *game, FILE *fp) {
   // TODO: Implement this function.
+  for(int i = 0; i < game->num_rows; i++){
+    fprintf(fp,game->board[i],"%s");
+  }
   return;
 }
 
