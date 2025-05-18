@@ -292,16 +292,14 @@ void update_game(game_t *game, int (*add_food)(game_t *game)) {
   for(unsigned ui = 0; ui < game->num_snakes; ui++){
 
     if(game->snakes[ui].live == true){
+      if((next_square(game,ui) == '#' || is_snake(next_square(game,ui)))){
+        set_board_at(game, game->snakes[ui].head_row, game->snakes[ui].head_col,'x');
+        game->snakes[ui].live = false; 
+      }
       if(next_square(game,ui) == ' '){
         update_head(game,ui);
         update_tail(game,ui);
       }
-      if((next_square(game,ui) == '#' || next_square(game,ui) == '^' || next_square(game,ui) == '<'
-          || next_square(game,ui) == 'v' || next_square(game,ui) == '>' )){
-        set_board_at(game, game->snakes[ui].head_row, game->snakes[ui].head_col,'x');
-        game->snakes[ui].live = false; 
-      }
-
       if(next_square(game,ui) == '*'){
         update_head(game,ui);
         add_food(game);
@@ -314,11 +312,11 @@ void update_game(game_t *game, int (*add_food)(game_t *game)) {
 /* Task 5.1 */
 char *read_line(FILE *fp) {
   // TODO: Implement this function.
-  char *s = malloc(99*sizeof(char));
-  fgets(s,63,fp);
+  char *s = malloc(60*sizeof(char));
+  fgets(s,99,fp);
   char *fin =strchr(s,'\n');
   int index = (&fin - &s) / sizeof(char);
-  char *news =(char*)realloc(s,index);
+  char *news =(char*)realloc(s,index * sizeof(char));
 
   return news;
 }
@@ -329,7 +327,7 @@ game_t *load_board(FILE *fp) {
   game_t* bboard = malloc(sizeof(game_t));
   bboard->num_snakes = 0;
   bboard->snakes = NULL;
-  bboard->board = malloc(63 * sizeof(char*));
+  bboard->board = malloc(60 * sizeof(char*));
   unsigned flag = 0;
   while (!feof(fp)){
     char* str = read_line(fp);
